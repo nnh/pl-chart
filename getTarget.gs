@@ -14,7 +14,8 @@ function getTargetFacilitiesNames(){
 * @return {string} The values of the target rows
 */
 function getTargetFacilitiesValues(){
-  const segmentValuesList = getTargetFacilityList('E', '臨床研究センター', true);
+  const target = PropertiesService.getScriptProperties().getProperty('clinicalResearchCenter');
+  const segmentValuesList = getTargetFacilityList('E', target, true);
   return segmentValuesList;
 }
 /**
@@ -25,27 +26,36 @@ function getTargetFacilitiesValues(){
 * @return {string} The values of the target rows
 */
 function getTargetFacilityList(targetCol, conditionString, condition){
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const siteSheet = ss.getSheetByName('site');
+  const siteSheet = getTargetSheet(PropertiesService.getScriptProperties().getProperty('facilitySheetName'));
   var siteValues = siteSheet.getRange('A:F').getValues();
-  const targetIndex = getColumnNumber(siteSheet, targetCol)
+  const targetIndex = getColumnNumber(targetCol);
   siteValues = siteValues.filter(function(x){
     if (condition){
       return x[targetIndex] == conditionString;
     } else {
       return x[targetIndex] != conditionString;
     }
-  })
+  });
   return siteValues; 
 }
 /**
-* Returns an array index from a column name
-* @param {sheet} targetSheet sheet object
-* @param {string} columnName Column name (e.g. 'A')
-* @return {number} The corresponding array index of getValues (e.g. return 0 if 'A')
+* Return the years in a one-dimensional array
+* @param none
+* @return {string} The years in a one-dimensional array
 */
-function getColumnNumber(targetSheet, columnName){ 
-  var colNumber = targetSheet.getRange(columnName + '1').getColumn();
-  colNumber--;
-  return colNumber;
+function getTargetYears(){
+  const workingSheet = getTargetSheet(PropertiesService.getScriptProperties().getProperty('inputSheetName'));
+  const yearsCol = PropertiesService.getScriptProperties().getProperty('inputSheetyearsCol');
+  const rangeAddr = yearsCol + ':' + yearsCol;
+  var years = workingSheet.getRange(rangeAddr).getValues();
+  // Making an array from two-dimensional to one-dimensional
+  years = years.reduce(function(x, item){
+    x.push(...item);
+    return x;
+  }, []);
+  // Removing Duplicates, Nulls and Headings
+  years = years.filter(x => x != '年度');
+  years = Array.from(new Set(years))
+  years = years.filter(Boolean);
+  return years;
 }
