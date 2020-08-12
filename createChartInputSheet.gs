@@ -5,7 +5,7 @@
 * @return {sheet} The sheet object created 
 */
 function createQuerySheet(chartConditions){
-  const inputSheet = getTargetSheet(PropertiesService.getScriptProperties().getProperty('inputSheetName'));
+  const inputSheetName = PropertiesService.getScriptProperties().getProperty('inputSheetName');
   // Create output sheet
   const targetSheet = addSheetToEnd(chartConditions.outputSheetName); 
   // グラフ作成元データの出力

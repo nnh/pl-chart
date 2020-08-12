@@ -60,8 +60,9 @@ function createChart(chartConditions, inputSheet, outputSheet, outputChartRow){
   outputSheet.setHiddenGridlines(true);
 }
 
-function getCommonConstant(){
-  const items_unit = '1000000';  // 百万単位で出力する
+function getCommonConstant(target){
+  // Output in millions of yen
+  const items_unit = '1000000';
   var chartConditions = {};
   chartConditions.constClinicalResearch = '（臨床研究）';
   chartConditions.constOrdinary = '（全体）';
@@ -76,28 +77,35 @@ function getCommonConstant(){
   chartConditions.labelRevenue = '収益';
   chartConditions.labelCost = '費用';
   chartConditions.labelProfit = '利益';
+  chartConditions.targetName = target.name;
+  // The name of the sheet to output the Chart
+  chartConditions.chartSheetName = chartConditions.targetName;
+  chartConditions.xCol = target.xCol;
+  // Address of the cell range of the input data for Chart output
+  chartConditions.rangeAddress_x = chartConditions.xCol + chartConditions.startRow + ':' + chartConditions.xCol + chartConditions.endRow;
+  chartConditions.condition = chartConditions.targetName;
+  chartConditions.dataCol = target.dataCol;
+  chartConditions.orderbyCol = target.orderbyCol;
+  chartConditions.ymdCondition = target.ymdCondition;
   return chartConditions;
 }
 function setChartRange(chartConditions){
-  // データ範囲を指定
+  // Address of the cell range of the input data for Chart output
   chartConditions.rangeAddress_y0 = chartConditions.col_y0 + chartConditions.startRow + ':' + chartConditions.col_y0 + chartConditions.endRow;
   chartConditions.rangeAddress_y1 = chartConditions.col_y1 + chartConditions.startRow + ':' + chartConditions.col_y1 + chartConditions.endRow;
   chartConditions.rangeAddress_y2 = chartConditions.col_y2 + chartConditions.startRow + ':' + chartConditions.col_y2 + chartConditions.endRow;
-  // グラフのタイトルと出力シート名もついでにここで  
+  // The name of the sheet to output the input data for Chart output
   chartConditions.outputSheetName = chartConditions.targetName + chartConditions.targetCost;
+  // Chart title 
   chartConditions.title = chartConditions.outputSheetName;
   return chartConditions;
 }
 function executeCreateChart(target){
-  var chartConditions = getCommonConstant();
+  var chartConditions = getCommonConstant(target);
   // グラフ出力シート作成
   // 臨床研究
   chartConditions.targetCost = chartConditions.constClinicalResearch;
-  chartConditions.targetName = target.name;
-  chartConditions.chartSheetName = chartConditions.targetName;  // グラフを出力するシート名
   const chart_outputSheet = addSheetToEnd(chartConditions.chartSheetName); 
-  chartConditions.xCol = target.xCol;
-  chartConditions.rangeAddress_x = chartConditions.xCol + chartConditions.startRow + ':' + chartConditions.xCol + chartConditions.endRow;
   chartConditions.col_y0 = 'L';
   chartConditions.col_y1 = 'N';
   chartConditions.col_y2 = 'Q';
@@ -105,11 +113,6 @@ function executeCreateChart(target){
   chartConditions.costItem = 'F*-1/1000000';
   chartConditions.profitItem = 'I/1000000';
   setChartRange(chartConditions);
-  chartConditions.condition = chartConditions.targetName;
-  chartConditions.dataCol = target.dataCol;
-  chartConditions.orderbyCol = target.orderbyCol;
-  chartConditions.ymdCondition = target.ymdCondition;
-  chartConditions.max_y2 = '';
   const inputSheet_clinical_research = createQuerySheet(chartConditions)
   createChart(chartConditions, inputSheet_clinical_research, chart_outputSheet, 1);
   // 経常
