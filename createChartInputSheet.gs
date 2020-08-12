@@ -1,4 +1,3 @@
-// 
 /**
 * Creating the source data for the chart
 * @param {object} chartConditions 

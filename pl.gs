@@ -11,27 +11,19 @@ function execCreateChart(){
   var target = {};
   // Output sheets for each facility
   const targetFacilities = getTargetFacilitiesValues();
-  const facilityNameCol = PropertiesService.getScriptProperties().getProperty('inputSheetfacilityNameCol');
-  const yearsCol = PropertiesService.getScriptProperties().getProperty('inputSheetyearsCol');
-  const facilityNameIdx = getColumnNumber(facilityNameCol);
+  const facilityNameIdx = getColumnNumber(PropertiesService.getScriptProperties().getProperty('inputSheetfacilityNameCol'));
   targetFacilities.map(function(targetFacility){
     target.name = targetFacility[facilityNameIdx];
-    target.dataCol = facilityNameCol;  // Output by facility name
-    target.xCol = yearsCol;            // Horizontal axis:years
-    target.orderbyCol = yearsCol;      // Sort the output order of the horizontal axis by year
-    target.ymdCondition = '';
-    executeCreateChart(target);
+    var chartConditions = new classSetChartConditionsByFacility(target);
+    executeCreateChart(chartConditions);
   });
+  return;
   // Output sheets for each year
   const targetYears = getTargetYears();
-  const targetSegment = PropertiesService.getScriptProperties().getProperty('clinicalResearchCenter');
   targetYears.map(function(targetYear){
     target.name = targetYear;
-    target.dataCol = yearsCol;        // Output by year
-    target.xCol = facilityNameCol;    // Horizontal axis:facility name
-    target.orderbyCol = 'K';          // Sort the output order of the horizontal axis by facility code
-    target.ymdCondition = "and J = '" + targetSegment + "' ";  // Only if the segment is a clinical research center
-    executeCreateChart(target);
+    var chartConditions = new classSetChartConditionsByYear(target);
+    executeCreateChart(chartConditions);
   });
   // Sort the all sheets
   sortSheets();

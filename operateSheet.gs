@@ -5,7 +5,8 @@
 * @return none
 */
 function visibleWorkings(){
-  visibleHiddenWorkSheets(true);
+  const visibleSheets = new classVisibleSheets;
+  visibleSheets.exec();
 }
 /**
 * Hide the sheets not to be printed
@@ -13,36 +14,23 @@ function visibleWorkings(){
 * @return none
 */
 function hiddenWorkings(){
-  visibleHiddenWorkSheets(false);
+  const hiddenSheets = new classHiddenSheets;
+  hiddenSheets.exec();
 }
-/**
-* Show/Hide Sheets
-* @param {boolean} condition
-* @return {string} The names of the clinical research center in a one-dimensional array
-*/
-function visibleHiddenWorkSheets(condition){
-  class visibleHiddenSheets{
-    constructor(condition){
-      this.targetSheets = getSheetsNonTargetPrinting();
-    }
+class classVisibleHiddenSheets{
+  constructor(){
+  this.targetSheets = getSheetsNonTargetPrinting();
   }
-  class visibleSheets extends visibleHiddenSheets{
-    exec(){
-      this.targetSheets.map(x => x.showSheet());
-    }
+}
+class classVisibleSheets extends classVisibleHiddenSheets{
+  exec(){
+    this.targetSheets.map(x => x.showSheet());
   }
-  class hiddenSheets extends visibleHiddenSheets{
-    exec(){
-      this.targetSheets.map(x => x.hideSheet());
-    }
+}
+class classHiddenSheets extends classVisibleHiddenSheets{
+  exec(){
+    this.targetSheets.map(x => x.hideSheet());
   }
-  var showHide;
-  if (condition){
-    showHide = new visibleSheets;
-  } else {
-    showHide = new hiddenSheets;
-  }
-  return showHide.exec();  
 }
 /**
 * Get the sheets that don't print
