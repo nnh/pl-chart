@@ -59,23 +59,16 @@ function createChart(chartConditions, inputSheet, outputSheet, outputChartRow){
   outputSheet.setHiddenGridlines(true);
 }
 function executeCreateChart(target){
-  // グラフ出力シート作成
-  // 臨床研究
-  //var chartConditions = target;
+  // Create a sheet to output a chart
   const chart_outputSheet = addSheetToEnd(target.chartSheetName); 
+  // ClinicalResearch
   var chartConditionsClinicalResearch = target;
-  chartConditionsClinicalResearch.ClinicalResearch = '';
+  chartConditionsClinicalResearch.clinicalResearch = '';
   executeCreateChartCommon(chartConditionsClinicalResearch, chart_outputSheet);
-  // 経常
-  var chartConditions = target;
-  chartConditions.targetCost = chartConditions.constOrdinary;
-  chartConditions.col_y0 = 'M';
-  chartConditions.col_y1 = 'O';
-  chartConditions.col_y2 = 'P';
-  chartConditions.revenueItem = 'E/1000000';
-  chartConditions.costItem = 'G*-1/1000000';
-  chartConditions.profitItem = 'H/1000000';
-  executeCreateChartCommon(chartConditions, chart_outputSheet);
+  // Ordinary
+  var chartConditionsOrdinary = target;
+  chartConditionsOrdinary.ordinary = '';
+  executeCreateChartCommon(chartConditionsOrdinary, chart_outputSheet);
 }
 
 class classSetChartConditions{
@@ -96,12 +89,8 @@ class classSetChartConditions{
     this.labelCost = '費用';
     this.labelProfit = '利益';
     this.targetName = target.name;
-    // The name of the sheet to output the Chart
-    this.chartSheetName = this.targetName;
-    // Address of the cell range of the input data for Chart output
-    this.condition = this.targetName;
   }
-  set ClinicalResearch(value){
+  set clinicalResearch(value){
     this.targetCost = this.constClinicalResearch;
 	this.col_y0 = 'L';
 	this.col_y1 = 'N';
@@ -111,26 +100,33 @@ class classSetChartConditions{
 	this.profitItem = 'I/1000000';
     this.outputRow = 1;
   }
-  get ClinicalResearch(){
+  get clinicalResearch(){
     return this;
   }
-}
-function aaa(){
-  var target = {};
-  target.name = "ccc";
-  var bbb = new classSetChartConditionsByFacility(target);
-  bbb.ClinicalResearch = '';
-  var eee = bbb.ClinicalResearch;
-  Logger.log(bbb);
+  set ordinary(value){
+    this.targetCost = this.constOrdinary;
+	this.col_y0 = 'M';
+	this.col_y1 = 'O';
+	this.col_y2 = 'P';
+	this.revenueItem = 'E/1000000';
+	this.costItem = 'G*-1/1000000';
+	this.profitItem = 'H/1000000';
+    this.outputRow = 24;
+  }
+  get ordinary(){
+    return this;
+  }
 }
 class classSetChartConditionsByFacility extends classSetChartConditions{
   constructor(target){
     const yearsCol = PropertiesService.getScriptProperties().getProperty('inputSheetyearsCol');
     super(target);
-    this.dataCol = PropertiesService.getScriptProperties().getProperty('inputSheetfacilityNameCol');
+    this.dataCol = PropertiesService.getScriptProperties().getProperty('inputSheetfacilityCodeCol');
     this.xCol = yearsCol;
     this.orderbyCol = yearsCol;
     this.ymdCondition = '';
+    // Address of the cell range of the input data for Chart output
+    this.condition = this.targetName;
   }
 }
 class classSetChartConditionsByYear extends classSetChartConditions{
@@ -139,8 +135,10 @@ class classSetChartConditionsByYear extends classSetChartConditions{
     super(target);
     this.dataCol = PropertiesService.getScriptProperties().getProperty('inputSheetyearsCol');
     this.xCol = PropertiesService.getScriptProperties().getProperty('inputSheetfacilityNameCol');
-    this.orderbyCol = 'K';
+    this.orderbyCol = PropertiesService.getScriptProperties().getProperty('inputSheetfacilityCodeCol');
     this.ymdCondition = "and J = '" + targetSegment + "' ";
+    // Address of the cell range of the input data for Chart output
+    this.condition = "'" + this.targetName + "'";
   }
 }
 function executeCreateChartCommon(chartConditions, chart_outputSheet){
@@ -154,11 +152,5 @@ function executeCreateChartCommon(chartConditions, chart_outputSheet){
   // Chart title 
   chartConditions.title = chartConditions.outputSheetName;
   const inputSheet = createQuerySheet(chartConditions);
-  var outputRow;
-  if (chartConditions.targetCost == chartConditions.constClinicalResearch){
-    outputRow = 1;
-  } else {
-    outputRow = 24;
-  }
-  createChart(chartConditions, inputSheet, chart_outputSheet, outputRow);
+  createChart(chartConditions, inputSheet, chart_outputSheet, chartConditions.outputRow);
 }  

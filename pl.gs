@@ -11,9 +11,10 @@ function execCreateChart(){
   var target = {};
   // Output sheets for each facility
   const targetFacilities = getTargetFacilitiesValues();
-  const facilityNameIdx = getColumnNumber(PropertiesService.getScriptProperties().getProperty('inputSheetfacilityNameCol'));
+  const facilityNameIdx = 0;
   targetFacilities.map(function(targetFacility){
     target.name = targetFacility[facilityNameIdx];
+    target.chartSheetName = getRecentFacilityName(target.name);
     var chartConditions = new classSetChartConditionsByFacility(target);
     executeCreateChart(chartConditions);
   });
@@ -22,6 +23,7 @@ function execCreateChart(){
   const targetYears = getTargetYears();
   targetYears.map(function(targetYear){
     target.name = targetYear;
+    target.chartSheetName = target.name;
     var chartConditions = new classSetChartConditionsByYear(target);
     executeCreateChart(chartConditions);
   });

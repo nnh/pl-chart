@@ -6,8 +6,11 @@
 function registerScriptProperty(){
   PropertiesService.getScriptProperties().setProperty('facilitySheetName', 'site');
   PropertiesService.getScriptProperties().setProperty('inputSheetName', 'working');
+  PropertiesService.getScriptProperties().setProperty('siteSheetfacilityCodeCol', 'A');
+  PropertiesService.getScriptProperties().setProperty('siteSheetfacilityNameCol', 'B');
   PropertiesService.getScriptProperties().setProperty('inputSheetfacilityNameCol', 'B');
   PropertiesService.getScriptProperties().setProperty('inputSheetyearsCol', 'C');
+  PropertiesService.getScriptProperties().setProperty('inputSheetfacilityCodeCol', 'K');
   PropertiesService.getScriptProperties().setProperty('clinicalResearchCenter', '臨床研究センター');
 }
 /**

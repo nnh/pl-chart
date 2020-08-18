@@ -59,3 +59,36 @@ function getTargetYears(){
   years = years.filter(Boolean);
   return years;
 }
+/**
+* Returns the name of the most recent facility from the facility code
+* @param {number} The facility code
+* @return {string} The most recent facility name
+*/
+function getRecentFacilityName(facilityCode){
+  const facilityCodeCol = PropertiesService.getScriptProperties().getProperty('siteSheetfacilityCodeCol');
+  const facilityIdx = getColumnNumber(PropertiesService.getScriptProperties().getProperty('siteSheetfacilityNameCol'));
+  const facilityList = getTargetFacilityList(facilityCodeCol, facilityCode, true);
+  var facilityNames = facilityList.map(x => x[facilityIdx]);
+  // If it's one code and one facility name, it returns the name of the facility
+  if (facilityNames.length == 1){
+    return facilityNames[0];
+  }
+  // If more than one facility name in one code, only the most recent one is returned
+  const years = getTargetYears();
+  const workingSheetValues = getTargetSheet(PropertiesService.getScriptProperties().getProperty('inputSheetName')).getRange('A:E').getValues();
+  const inputYearsIdx = getColumnNumber(PropertiesService.getScriptProperties().getProperty('inputSheetyearsCol'));
+  const inputFacilityNameIdx = getColumnNumber(PropertiesService.getScriptProperties().getProperty('inputSheetfacilityNameCol'));
+  for (var i = years.length - 1; i >= 0; i--){
+    var tempYearValues = workingSheetValues.filter(x => x[inputYearsIdx] == years[i]);
+    var tempfacilityByYear = tempYearValues.filter(x => facilityNames.indexOf(x[inputFacilityNameIdx]) > -1);
+    if (tempfacilityByYear.length > 0){
+      break;
+    }
+  }
+  if (tempfacilityByYear.length == 1){
+    return tempfacilityByYear[0][inputFacilityNameIdx];
+  } else {
+    // Not supported if more than one facility is named with the same code in the same year
+    return null;
+  }
+}
