@@ -1,5 +1,3 @@
-// https://developers.google.com/chart/interactive/docs/gallery/combochart
-
 /**
 * Create Charts of clinical research centers by facility and year
 * @param none
@@ -9,11 +7,7 @@ function execCreateChart(){
   // Delete the output sheets
   deleteSheets();
   var target = {};
-  const targetFacilities = getTargetFacilitiesValues();
-  // Removing Duplicate Code, get the latest name of the facility
-  var targetFacilitiesCodes = targetFacilities.map(x => x[0]);
-  targetFacilitiesCodes = Array.from(new Set(targetFacilitiesCodes));
-  const targetFacilitiesCodeAndName = targetFacilitiesCodes.map(x => getRecentFacilityName(x));
+  const targetFacilitiesCodeAndName = getTargetFacilitiesCodeAndName(true);
   // Output sheets for each facility
   targetFacilitiesCodeAndName.map(function(targetFacility){
     target.name = targetFacility[0];
@@ -32,3 +26,36 @@ function execCreateChart(){
   // Sort the all sheets
   sortSheets();
 }
+/**
+* 臨床研究センター以外出力
+* @param none
+* @return none
+*/
+function execCreateChartOthersMain(){
+  const countMax = 33;
+  const outputSS_1 = SpreadsheetApp.openById(PropertiesService.getScriptProperties().getProperty('outputSpreadsheetIdOthers1'));
+  const targetFacilitiesCodeAndName = getTargetFacilitiesCodeAndName(false);
+  const outputSS1Count = countMax;
+  const outputSS2Count = countMax;
+  const outputSS3Count = countMax;
+  const outputSS4Count = targetFacilitiesCodeAndName.length - countMax * 3;
+  execCreateChartOthers(outputSS_1);
+}
+function execCreateChartOthers(ss){
+  // 一つだけシートを残して他は全て削除する
+  const deleteSheetName = 'temp_del';
+  var tempSheets = ss.getSheets();
+  const tempSheet = tempSheets[0];
+  if (tempSheets.length > 1){
+    tempSheets.splice(0, 1);
+    tempSheets.map(x => ss.deleteSheet(x));
+  }
+  tempSheet.setName(deleteSheetName);
+  
+  
+  // 不要シートを削除
+  if (ss.getSheets().length > 1){
+    ss.deleteSheet(tempSheet);
+  }
+}
+

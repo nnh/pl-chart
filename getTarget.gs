@@ -11,26 +11,43 @@ function getTargetFacilitiesNames(){
 * Returns a one-dimensional array of values at a specified index
 * @param {number} Target array index 
 * @return {string} A one-dimensional array of values at a specified index
-*/function getTargetColValueFacilities(idx){
-  var facilityValues = getTargetFacilitiesValues();
+*/
+function getTargetColValueFacilities(idx, condition=true){
+  var facilityValues = getTargetFacilitiesValues(condition);
   facilityValues = facilityValues.map(x => x[idx]);
   return facilityValues;
 }
 /**
-* Returns the value of the row where the segment is '臨床研究センター' 
-* @param none
+* Returns the value of the row where the segment is '臨床研究センター' or not '臨床研究センター' 
+* @param {boolean} condition: If true then '臨床研究センター', else not '臨床研究センター' is a target 
+* @return {string} The values of the target code and name
+*/
+function getTargetFacilitiesCodeAndName(condition=true){
+  const targetFacilities = getTargetFacilitiesValues(condition);
+  // Removing Duplicate Code, get the latest name of the facility
+  var targetFacilitiesCodes = targetFacilities.map(x => x[0]);
+  targetFacilitiesCodes = Array.from(new Set(targetFacilitiesCodes));
+  // Remove any facility code that is not a number
+  targetFacilitiesCodes = targetFacilitiesCodes.filter(x => isFinite(x));
+  var targetFacilitiesCodeAndName = targetFacilitiesCodes.map(x => getRecentFacilityName(x));
+  targetFacilitiesCodeAndName = targetFacilitiesCodeAndName.filter(Boolean);
+  return targetFacilitiesCodeAndName;
+}
+/**
+* Returns the value of the row where the segment is '臨床研究センター' or not '臨床研究センター' 
+* @param {boolean} condition: If true then '臨床研究センター', else not '臨床研究センター' is a target 
 * @return {string} The values of the target rows
 */
-function getTargetFacilitiesValues(){
+function getTargetFacilitiesValues(condition=true){
   const target = PropertiesService.getScriptProperties().getProperty('clinicalResearchCenter');
-  const segmentValuesList = getTargetFacilityList('E', target, true);
+  const segmentValuesList = getTargetFacilityList('E', target, condition);
   return segmentValuesList;
 }
 /**
 * Extract the values of the rows that match the conditions from the Site sheet
-* @param {string} targetCol The column name of the extraction condition, e.g. 'C'
-* @param {string} conditionString A string of conditions
-* @param {boolean} condition IF true then '==', else '!='.
+* @param {string} targetCol: The column name of the extraction condition, e.g. 'C'
+* @param {string} conditionString: A string of conditions
+* @param {boolean} condition: If true then '==', else '!='.
 * @return {string} The values of the target rows
 */
 function getTargetFacilityList(targetCol, conditionString, condition){

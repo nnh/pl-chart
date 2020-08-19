@@ -7,6 +7,8 @@
 * @return none 
 */
 function createChart(chartConditions, inputSheet, outputSheet, outputChartRow){
+  // Reference URL
+  // https://developers.google.com/chart/interactive/docs/gallery/combochart
   var table_outputRow = chartConditions.tableStartRow;
   const tableStartCol = 2;
   const chartTitleFontSize = 20;

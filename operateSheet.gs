@@ -46,11 +46,10 @@ function getSheetsNonTargetPrinting(){
 }
 /**
 * Delete the output sheets
-* @param none
+* @param {spreadsheet} ss: The target spreadsheet
 * @return none
 */
-function deleteSheets(){
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+function deleteSheets(ss=SpreadsheetApp.getActiveSpreadsheet()){
   const sheetsNonTargetDeletion = getSheetsNonTargetPrinting();
   const sheetNamesNonTargetDeletion = sheetsNonTargetDeletion.map(x => x.getName());
   const targetSheets = ss.getSheets().filter(function(x){
@@ -74,10 +73,10 @@ function deleteTargetSheet(sheetName){
 /**
 * Sort the sheets
 * Order: sheets not to be printed, facility name, year
-* @param none
+* @param {spreadsheet} ss: The target spreadsheet
 * @return none
 */
-function sortSheets(){
+function sortSheets(ss=SpreadsheetApp.getActiveSpreadsheet()){
   const targetFacilities = getTargetFacilitiesNames();
   const targetYears = getTargetYears();
   const targetSheetsName = targetFacilities.concat(targetYears);
@@ -87,16 +86,17 @@ function sortSheets(){
   const moveSheets = sheetsNonTargetPrinting.concat(sheetsTargetPrinting);
   moveSheets.map(function(x, idx){
     x.activate();
-    SpreadsheetApp.getActiveSpreadsheet().moveActiveSheet(idx + 1);
+    ss.moveActiveSheet(idx + 1);
   });
 }
 /**
 * Getting a Sheet object from an array of sheet names
 * @param {string[]} sheetNames An array of sheet names
+* @param {spreadsheet} ss: The target spreadsheet
 * @return {sheet} the sheet objects
 */
-function getTargetSheets(sheetNames){
-  var targetSheets = sheetNames.map(x => SpreadsheetApp.getActiveSpreadsheet().getSheetByName(x));
+function getTargetSheets(sheetNames, ss=SpreadsheetApp.getActiveSpreadsheet()){
+  var targetSheets = sheetNames.map(x => ss.getSheetByName(x));
   // If the sheet with that name does not exist, remove it from the array
   targetSheets = targetSheets.filter(Boolean);
   return targetSheets;
@@ -104,10 +104,10 @@ function getTargetSheets(sheetNames){
 /**
 * Create a sheet at the end
 * @param {string} sheetName the sheet name
+* @param {spreadsheet} ss: The target spreadsheet
 * @return {sheet} the sheet objects
 */
-function addSheetToEnd(sheetName){
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+function addSheetToEnd(sheetName, ss=SpreadsheetApp.getActiveSpreadsheet()){
   const tempIdx = ss.getNumSheets();
   const targetSheet = ss.insertSheet(sheetName, parseInt(tempIdx)); 
   return targetSheet;  

@@ -12,6 +12,7 @@ function registerScriptProperty(){
   PropertiesService.getScriptProperties().setProperty('inputSheetyearsCol', 'C');
   PropertiesService.getScriptProperties().setProperty('inputSheetfacilityCodeCol', 'K');
   PropertiesService.getScriptProperties().setProperty('clinicalResearchCenter', '臨床研究センター');
+  PropertiesService.getScriptProperties().setProperty('outputSpreadsheetIdOthers1', '');
 }
 /**
 * Returns an array index from a column name
@@ -27,8 +28,9 @@ function getColumnNumber(columnName){
 /**
 * Get the sheet
 * @param {string} sheetName the sheet name
+* @param {spreadsheet} ss: The target spreadsheet
 * @return {sheet} the sheet objects
 */
-function getTargetSheet(sheetName){
-  return SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+function getTargetSheet(sheetName, ss=SpreadsheetApp.getActiveSpreadsheet()){
+  return ss.getSheetByName(sheetName);
 }
