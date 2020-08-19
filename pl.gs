@@ -9,16 +9,18 @@ function execCreateChart(){
   // Delete the output sheets
   deleteSheets();
   var target = {};
-  // Output sheets for each facility
   const targetFacilities = getTargetFacilitiesValues();
-  const facilityNameIdx = 0;
-  targetFacilities.map(function(targetFacility){
-    target.name = targetFacility[facilityNameIdx];
-    target.chartSheetName = getRecentFacilityName(target.name);
+  // Removing Duplicate Code, get the latest name of the facility
+  var targetFacilitiesCodes = targetFacilities.map(x => x[0]);
+  targetFacilitiesCodes = Array.from(new Set(targetFacilitiesCodes));
+  const targetFacilitiesCodeAndName = targetFacilitiesCodes.map(x => getRecentFacilityName(x));
+  // Output sheets for each facility
+  targetFacilitiesCodeAndName.map(function(targetFacility){
+    target.name = targetFacility[0];
+    target.chartSheetName = targetFacility[1];
     var chartConditions = new classSetChartConditionsByFacility(target);
     executeCreateChart(chartConditions);
   });
-  return;
   // Output sheets for each year
   const targetYears = getTargetYears();
   targetYears.map(function(targetYear){

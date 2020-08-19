@@ -89,6 +89,7 @@ class classSetChartConditions{
     this.labelCost = '費用';
     this.labelProfit = '利益';
     this.targetName = target.name;
+    this.chartSheetName = target.chartSheetName;
   }
   set clinicalResearch(value){
     this.targetCost = this.constClinicalResearch;
@@ -148,7 +149,7 @@ function executeCreateChartCommon(chartConditions, chart_outputSheet){
   chartConditions.rangeAddress_y1 = chartConditions.col_y1 + chartConditions.startRow + ':' + chartConditions.col_y1 + chartConditions.endRow;
   chartConditions.rangeAddress_y2 = chartConditions.col_y2 + chartConditions.startRow + ':' + chartConditions.col_y2 + chartConditions.endRow;
   // The name of the sheet to output the input data for Chart output
-  chartConditions.outputSheetName = chartConditions.targetName + chartConditions.targetCost;
+  chartConditions.outputSheetName = chartConditions.chartSheetName + chartConditions.targetCost;
   // Chart title 
   chartConditions.title = chartConditions.outputSheetName;
   const inputSheet = createQuerySheet(chartConditions);

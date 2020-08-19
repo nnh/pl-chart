@@ -17,18 +17,6 @@ function createQuerySheet(chartConditions){
                                                                       chartConditions.costItem + " '" + chartConditions.labelCost + "'," +  
                                                                       chartConditions.profitItem + " '" + chartConditions.labelProfit + "'" +  
                                                             '")';
-  // 近畿中央呼吸器センターと近畿中央胸部疾患センター
-/*  if (chartConditions.targetName == '近畿中央呼吸器センター'){
-    strQuery = '=query(' + inputSheetName + '!A:K, "select A, B, C, D, E, F, G, H, I, J, K, ' + chartConditions.selectItems_D + ',' + chartConditions.selectItems_E + ',' + chartConditions.selectItems_F + ',' + 
-                                                                  chartConditions.selectItems_G + ',' + chartConditions.selectItems_H + ',' + chartConditions.selectItems_I  +
-                                                          ' where ' + " B = '近畿中央呼吸器センター' or B = '近畿中央胸部疾患センター' " + 
-                                                                   " and " + chartConditions.xCol + ' is not null ' + chartConditions.ymdCondition + 
-                                                          ' order by ' + chartConditions.orderbyCol + 
-                                                          ' label ' + chartConditions.revenueItem + " '" + chartConditions.labelRevenue + "', " + 
-                                                                      chartConditions.costItem + " '" + chartConditions.labelCost + "'," +  
-                                                                      chartConditions.profitItem + " '" + chartConditions.labelProfit + "'" +  
-                                                            '")';
-  }*/
   targetSheet.getRange(1, 1).setFormula(strQuery);
   // Formatting Chart Data
   targetSheet.getRange('D:Q').setNumberFormat('#,##0');

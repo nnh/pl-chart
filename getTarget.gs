@@ -4,8 +4,16 @@
 * @return {string} The names of the clinical research center in a one-dimensional array
 */
 function getTargetFacilitiesNames(){
+  const colIndex = getColumnNumber(PropertiesService.getScriptProperties().getProperty('siteSheetfacilityNameCol'));
+  return getTargetColValueFacilities(colIndex);
+}
+/**
+* Returns a one-dimensional array of values at a specified index
+* @param {number} Target array index 
+* @return {string} A one-dimensional array of values at a specified index
+*/function getTargetColValueFacilities(idx){
   var facilityValues = getTargetFacilitiesValues();
-  facilityValues = facilityValues.map(x => x[1]);
+  facilityValues = facilityValues.map(x => x[idx]);
   return facilityValues;
 }
 /**
@@ -62,7 +70,7 @@ function getTargetYears(){
 /**
 * Returns the name of the most recent facility from the facility code
 * @param {number} The facility code
-* @return {string} The most recent facility name
+* @return {string} The code and the most recent facility name
 */
 function getRecentFacilityName(facilityCode){
   const facilityCodeCol = PropertiesService.getScriptProperties().getProperty('siteSheetfacilityCodeCol');
@@ -71,7 +79,7 @@ function getRecentFacilityName(facilityCode){
   var facilityNames = facilityList.map(x => x[facilityIdx]);
   // If it's one code and one facility name, it returns the name of the facility
   if (facilityNames.length == 1){
-    return facilityNames[0];
+    return [facilityCode, facilityNames[0]];
   }
   // If more than one facility name in one code, only the most recent one is returned
   const years = getTargetYears();
@@ -86,7 +94,7 @@ function getRecentFacilityName(facilityCode){
     }
   }
   if (tempfacilityByYear.length == 1){
-    return tempfacilityByYear[0][inputFacilityNameIdx];
+    return [facilityCode, tempfacilityByYear[0][inputFacilityNameIdx]];
   } else {
     // Not supported if more than one facility is named with the same code in the same year
     return null;
