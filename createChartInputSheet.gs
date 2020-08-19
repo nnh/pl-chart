@@ -7,7 +7,7 @@ function createQuerySheet(chartConditions){
   const inputSheetName = PropertiesService.getScriptProperties().getProperty('inputSheetName');
   // Create output sheet
   const targetSheet = addSheetToEnd(chartConditions.outputSheetName); 
-  // グラフ作成元データの出力
+  // Output the source data of a chart
   var strQuery = '=query(' + inputSheetName + '!A:K, "select A, B, C, D, E, F, G, H, I, J, K, ' + chartConditions.selectItems_D + ',' + chartConditions.selectItems_E + ',' + chartConditions.selectItems_F + ',' + 
                                                                   chartConditions.selectItems_G + ',' + chartConditions.selectItems_H + ',' + chartConditions.selectItems_I  +
                                                           ' where ' + chartConditions.dataCol + ' = ' + chartConditions.condition + 

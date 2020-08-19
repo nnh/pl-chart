@@ -1,11 +1,14 @@
-// inputSheetの情報からグラフを作成する
+/**
+* Create a chart
+* @param {object} chartConditions　 
+* @param {sheet} inputSheet: Source of the chart　 
+* @param {sheet} outputSheet: Sheet to output a chart　 
+* @param {number} outputChartRow: Row to output a chart　 
+* @return none 
+*/
 function createChart(chartConditions, inputSheet, outputSheet, outputChartRow){
-  if (chartConditions.targetName == '近畿中央胸部疾患センター'){
-    return;
-  }
   var table_outputRow = chartConditions.tableStartRow;
   const tableStartCol = 2;
-  // chart object生成
   const chartTitleFontSize = 20;
   const annotationsFontSize = 10;
   const legendFontSize = 10;
@@ -13,17 +16,18 @@ function createChart(chartConditions, inputSheet, outputSheet, outputChartRow){
   const hAxisFontSize = 8;
   const tableFontSize = 10;
   var newChart = outputSheet.newChart()
-  // グラフ作成用データ範囲
+  // Data Range for a Chart
   .addRange(inputSheet.getRange(chartConditions.rangeAddress_x))
   .addRange(inputSheet.getRange(chartConditions.rangeAddress_y0))
   .addRange(inputSheet.getRange(chartConditions.rangeAddress_y1))
   .addRange(inputSheet.getRange(chartConditions.rangeAddress_y2))
-  .setChartType(Charts.ChartType.COMBO)  // 複合グラフ
-  .setPosition(outputChartRow, 1, 0, 0)  // 出力セル
-  // グラフのタイトル
+  .setChartType(Charts.ChartType.COMBO)
+  // The position to output a chart
+  .setPosition(outputChartRow, 1, 0, 0)
+  // Title
   .setOption('title', chartConditions.title)
   .setOption('titleTextStyle', {color: 'black', fontSize: chartTitleFontSize})
-  // グラフの種類
+  // Type of a chart
   .setOption('series', {
     0: {type: 'bars', color:'#666666', labelInLegend:chartConditions.labelRevenue, targetAxisIndex: 0, 
         dataLabel: 'value', dataLabelPlacement: 'outsideEnd', annotations: {textStyle: {color: 'gray', fontSize: annotationsFontSize}}}, 
@@ -32,16 +36,17 @@ function createChart(chartConditions, inputSheet, outputSheet, outputChartRow){
     2: {type: 'line', color: 'black', labelInLegend:chartConditions.labelProfit, lineWidth: 2, pointSize: 7, targetAxisIndex: 1, 
         dataLabel: 'value', dataLabelPlacement: 'outsideEnd', annotations: {textStyle: {color: 'black', fontSize: annotationsFontSize}}}
   })
-  .setOption('legend', {position: 'top', textStyle: {color: 'black', fontSize: legendFontSize}})  //凡例の設定
-  // グラフのサイズ
+  //Setting a legend
+  .setOption('legend', {position: 'top', textStyle: {color: 'black', fontSize: legendFontSize}}) 
+  // Chart size
   .setOption('width', 700)
   .setOption('height', 462)
-  // 横軸に出力する文字列に傾斜をつける
+  // Putting a slant on the output string on the horizontal axis
   .setOption('hAxis.slantedText', true)
   .setOption('hAxis.slantedTextAngle', 60)
-  // 横軸のフォントサイズ設定
+  // Set the font size of the horizontal axis
   .setOption('hAxis.textStyle.fontSize', hAxisFontSize)
-  // 縦軸の設定
+  // Vertical axis setting
   if (chartConditions.targetCost == chartConditions.constClinicalResearch){
     newChart.setOption('vAxes', {
       0: {title:'金額(百万円)', titleTextStyle: {fontSize: vAxesFontSize}, format: 'decimal', viewWindowMode: 'explicit', viewWindow: {min: -2000, max: 2000}, textStyle: {fontSize: vAxesFontSize}},   
@@ -53,11 +58,16 @@ function createChart(chartConditions, inputSheet, outputSheet, outputChartRow){
       1: {format: 'decimal', viewWindowMode: 'explicit', viewWindow: {min: -30000, max: 30000}, gridlines:{count: 5}, textPosition: 'none'}
     })
   };
-  // グラフを出力
+  // Output a chart
   outputSheet.insertChart(newChart.build());
-  // グリッド線を出力しないにする
+  // Set the grid line to "Do not output"
   outputSheet.setHiddenGridlines(true);
 }
+/**
+* Create a chart
+* @param {object} target: chartConditions　 
+* @return none 
+*/
 function executeCreateChart(target){
   // Create a sheet to output a chart
   const chart_outputSheet = addSheetToEnd(target.chartSheetName); 
@@ -70,7 +80,6 @@ function executeCreateChart(target){
   chartConditionsOrdinary.ordinary = '';
   executeCreateChartCommon(chartConditionsOrdinary, chart_outputSheet);
 }
-
 class classSetChartConditions{
   constructor(target){
     // Output in millions of yen
@@ -142,6 +151,12 @@ class classSetChartConditionsByYear extends classSetChartConditions{
     this.condition = "'" + this.targetName + "'";
   }
 }
+/**
+* Setting up common settings for chart creation
+* @param {object} chartConditions　 
+* @param {object} chart_outputSheet: Sheet to output a chart　 
+* @return none 
+*/
 function executeCreateChartCommon(chartConditions, chart_outputSheet){
   // Address of the cell range of the input data for Chart output
   chartConditions.rangeAddress_x = chartConditions.xCol + chartConditions.startRow + ':' + chartConditions.xCol + chartConditions.endRow;
