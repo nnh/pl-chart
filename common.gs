@@ -13,6 +13,7 @@ function registerScriptProperty(){
   PropertiesService.getScriptProperties().setProperty('inputSheetfacilityCodeCol', 'K');
   PropertiesService.getScriptProperties().setProperty('clinicalResearchCenter', '臨床研究センター');
   PropertiesService.getScriptProperties().setProperty('outputSpreadsheetIdOthers1', '');
+  PropertiesService.getScriptProperties().setProperty('outputSpreadsheetIdOthers4', '');
 }
 /**
 * Returns an array index from a column name

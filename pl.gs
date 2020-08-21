@@ -33,23 +33,29 @@ function execCreateChart(){
 */
 function execCreateChartOthersMain(){
   const countMax = 33;
-  const outputSS_1 = SpreadsheetApp.openById(PropertiesService.getScriptProperties().getProperty('outputSpreadsheetIdOthers1'));
   const targetFacilitiesCodeAndName = getTargetFacilitiesCodeAndName(false);
-  const outputSS1Count = countMax;
-  const outputSS2Count = countMax;
-  const outputSS3Count = countMax;
-  const outputSS4Count = targetFacilitiesCodeAndName.length - countMax * 3;
-  execCreateChartOthers(outputSS_1);
-}
-function execCreateChartOthers(ss){
-  // 一つだけシートを残して他は全て削除する
+  const targetFacilitiesCount = targetFacilitiesCodeAndName.length;
+  const targetArray = [['outputSpreadsheetIdOthers1', countMax],
+                       ['outputSpreadsheetIdOthers4', targetFacilitiesCount - countMax * 3]];
+  targetArray.map(function(x){
+    const condition = {ss: x[0], sheetCount: x[1]};
+    execCreateChartOthers(condition);
+  });
+}  
+function execCreateChartOthers(condition){
+                       console.log(condition);
+                       return;
+  const ss = condition.ss;
+  const sheetCount = condition.sheetCount;
   const deleteSheetName = 'temp_del';
+  // 一つだけシートを残して他は全て削除する
   var tempSheets = ss.getSheets();
   const tempSheet = tempSheets[0];
   if (tempSheets.length > 1){
     tempSheets.splice(0, 1);
     tempSheets.map(x => ss.deleteSheet(x));
   }
+  // 残したシートは最後に削除する
   tempSheet.setName(deleteSheetName);
   
   

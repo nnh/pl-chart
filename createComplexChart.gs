@@ -90,12 +90,12 @@ class classSetChartConditions{
     this.constOrdinary = '（全体）';
     this.startRow = 2;
     this.endRow = 30;
-    this.selectItems_D = 'D/' + items_unit;
-    this.selectItems_E = 'E/' + items_unit;
-    this.selectItems_F = 'F*-1/' + items_unit;
-    this.selectItems_G = 'G*-1/' + items_unit;
-    this.selectItems_H = 'H/' + items_unit;
-    this.selectItems_I = 'I/' + items_unit;
+    this.selectItems_D = 'sum(D)/' + items_unit;
+    this.selectItems_E = 'sum(E)/' + items_unit;
+    this.selectItems_F = 'sum(F)*-1/' + items_unit;
+    this.selectItems_G = 'sum(G)*-1/' + items_unit;
+    this.selectItems_H = 'sum(H)/' + items_unit;
+    this.selectItems_I = 'sum(I)/' + items_unit;
     this.labelRevenue = '収益';
     this.labelCost = '費用';
     this.labelProfit = '利益';
@@ -107,9 +107,9 @@ class classSetChartConditions{
 	this.col_y0 = 'L';
 	this.col_y1 = 'N';
 	this.col_y2 = 'Q';
-	this.revenueItem = 'D/1000000';
-	this.costItem = 'F*-1/1000000';
-	this.profitItem = 'I/1000000';
+	this.revenueItem = 'sum(D)/1000000';
+	this.costItem = 'sum(F)*-1/1000000';
+	this.profitItem = 'sum(I)/1000000';
     this.outputRow = 1;
   }
   get clinicalResearch(){
@@ -120,9 +120,9 @@ class classSetChartConditions{
 	this.col_y0 = 'M';
 	this.col_y1 = 'O';
 	this.col_y2 = 'P';
-	this.revenueItem = 'E/1000000';
-	this.costItem = 'G*-1/1000000';
-	this.profitItem = 'H/1000000';
+	this.revenueItem = 'sum(E)/1000000';
+	this.costItem = 'sum(G)*-1/1000000';
+	this.profitItem = 'sum(H)/1000000';
     this.outputRow = 24;
   }
   get ordinary(){
@@ -139,6 +139,8 @@ class classSetChartConditionsByFacility extends classSetChartConditions{
     this.ymdCondition = '';
     // Address of the cell range of the input data for Chart output
     this.condition = this.targetName;
+    this.strB = "'unused_B'";
+    this.groupBy = 'C, K';
   }
 }
 class classSetChartConditionsByYear extends classSetChartConditions{
@@ -151,6 +153,8 @@ class classSetChartConditionsByYear extends classSetChartConditions{
     this.ymdCondition = "and J = '" + targetSegment + "' ";
     // Address of the cell range of the input data for Chart output
     this.condition = "'" + this.targetName + "'";
+    this.strB = 'B';
+    this.groupBy = 'B, C, K';
   }
 }
 /**
