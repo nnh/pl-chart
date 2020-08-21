@@ -72,7 +72,7 @@ function createChart(chartConditions, inputSheet, outputSheet, outputChartRow){
 */
 function executeCreateChart(target){
   // Create a sheet to output a chart
-  const chart_outputSheet = addSheetToEnd(target.chartSheetName); 
+  const chart_outputSheet = addSheetToEnd(target.chartSheetName, target.ss); 
   // ClinicalResearch
   var chartConditionsClinicalResearch = target;
   chartConditionsClinicalResearch.clinicalResearch = '';
@@ -84,18 +84,19 @@ function executeCreateChart(target){
 }
 class classSetChartConditions{
   constructor(target){
+    this.ss = target.ss;
     // Output in millions of yen
     const items_unit = '1000000';
     this.constClinicalResearch = '（臨床研究）';
     this.constOrdinary = '（全体）';
     this.startRow = 2;
     this.endRow = 30;
-    this.selectItems_D = 'sum(D)/' + items_unit;
-    this.selectItems_E = 'sum(E)/' + items_unit;
-    this.selectItems_F = 'sum(F)*-1/' + items_unit;
-    this.selectItems_G = 'sum(G)*-1/' + items_unit;
-    this.selectItems_H = 'sum(H)/' + items_unit;
-    this.selectItems_I = 'sum(I)/' + items_unit;
+    this.selectItems_D = 'sum(Col4)/' + items_unit;
+    this.selectItems_E = 'sum(Col5)/' + items_unit;
+    this.selectItems_F = 'sum(Col6)*-1/' + items_unit;
+    this.selectItems_G = 'sum(Col7)*-1/' + items_unit;
+    this.selectItems_H = 'sum(Col8)/' + items_unit;
+    this.selectItems_I = 'sum(Col9)/' + items_unit;
     this.labelRevenue = '収益';
     this.labelCost = '費用';
     this.labelProfit = '利益';
@@ -107,9 +108,9 @@ class classSetChartConditions{
 	this.col_y0 = 'L';
 	this.col_y1 = 'N';
 	this.col_y2 = 'Q';
-	this.revenueItem = 'sum(D)/1000000';
-	this.costItem = 'sum(F)*-1/1000000';
-	this.profitItem = 'sum(I)/1000000';
+	this.revenueItem = 'sum(Col4)/1000000';
+	this.costItem = 'sum(Col6)*-1/1000000';
+	this.profitItem = 'sum(Col9)/1000000';
     this.outputRow = 1;
   }
   get clinicalResearch(){
@@ -120,9 +121,9 @@ class classSetChartConditions{
 	this.col_y0 = 'M';
 	this.col_y1 = 'O';
 	this.col_y2 = 'P';
-	this.revenueItem = 'sum(E)/1000000';
-	this.costItem = 'sum(G)*-1/1000000';
-	this.profitItem = 'sum(H)/1000000';
+	this.revenueItem = 'sum(Col5)/1000000';
+	this.costItem = 'sum(Col7)*-1/1000000';
+	this.profitItem = 'sum(Col8)/1000000';
     this.outputRow = 24;
   }
   get ordinary(){
@@ -131,30 +132,38 @@ class classSetChartConditions{
 }
 class classSetChartConditionsByFacility extends classSetChartConditions{
   constructor(target){
-    const yearsCol = PropertiesService.getScriptProperties().getProperty('inputSheetyearsCol');
+    const xColName = PropertiesService.getScriptProperties().getProperty('inputSheetyearsCol');
+    const yearsColInfo = new classGetColumnInfo(xColName);
+    const yearsCol = yearsColInfo.queryColumnName;
     super(target);
-    this.dataCol = PropertiesService.getScriptProperties().getProperty('inputSheetfacilityCodeCol');
+    const dataColInfo = new classGetColumnInfo(PropertiesService.getScriptProperties().getProperty('inputSheetfacilityCodeCol'));
+    this.dataCol = dataColInfo.queryColumnName;
+    this.xColName = xColName;
     this.xCol = yearsCol;
     this.orderbyCol = yearsCol;
     this.ymdCondition = '';
     // Address of the cell range of the input data for Chart output
     this.condition = this.targetName;
     this.strB = "'unused_B'";
-    this.groupBy = 'C, K';
+    this.groupBy = 'Col3, Col11';
   }
 }
 class classSetChartConditionsByYear extends classSetChartConditions{
   constructor(target){
     const targetSegment = PropertiesService.getScriptProperties().getProperty('clinicalResearchCenter');
     super(target);
-    this.dataCol = PropertiesService.getScriptProperties().getProperty('inputSheetyearsCol');
-    this.xCol = PropertiesService.getScriptProperties().getProperty('inputSheetfacilityNameCol');
-    this.orderbyCol = PropertiesService.getScriptProperties().getProperty('inputSheetfacilityCodeCol');
-    this.ymdCondition = "and J = '" + targetSegment + "' ";
+    const dataColInfo = new classGetColumnInfo(PropertiesService.getScriptProperties().getProperty('inputSheetyearsCol'));
+    this.dataCol = dataColInfo.queryColumnName;
+    this.xColName = PropertiesService.getScriptProperties().getProperty('inputSheetfacilityNameCol');
+    const xColInfo = new classGetColumnInfo(this.xColName);
+    this.xCol = xColInfo.queryColumnName;
+    const orderbyColInfo = new classGetColumnInfo(PropertiesService.getScriptProperties().getProperty('inputSheetfacilityCodeCol'));
+    this.orderbyCol = orderbyColInfo.queryColumnName;
+    this.ymdCondition = "and Col10 = '" + targetSegment + "' ";
     // Address of the cell range of the input data for Chart output
     this.condition = "'" + this.targetName + "'";
-    this.strB = 'B';
-    this.groupBy = 'B, C, K';
+    this.strB = 'Col2';
+    this.groupBy = 'Col2, Col3, Col11';
   }
 }
 /**
@@ -165,7 +174,7 @@ class classSetChartConditionsByYear extends classSetChartConditions{
 */
 function executeCreateChartCommon(chartConditions, chart_outputSheet){
   // Address of the cell range of the input data for Chart output
-  chartConditions.rangeAddress_x = chartConditions.xCol + chartConditions.startRow + ':' + chartConditions.xCol + chartConditions.endRow;
+  chartConditions.rangeAddress_x = chartConditions.xColName + chartConditions.startRow + ':' + chartConditions.xColName + chartConditions.endRow;
   chartConditions.rangeAddress_y0 = chartConditions.col_y0 + chartConditions.startRow + ':' + chartConditions.col_y0 + chartConditions.endRow;
   chartConditions.rangeAddress_y1 = chartConditions.col_y1 + chartConditions.startRow + ':' + chartConditions.col_y1 + chartConditions.endRow;
   chartConditions.rangeAddress_y2 = chartConditions.col_y2 + chartConditions.startRow + ':' + chartConditions.col_y2 + chartConditions.endRow;

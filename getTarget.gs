@@ -4,7 +4,8 @@
 * @return {string} The names of the clinical research center in a one-dimensional array
 */
 function getTargetFacilitiesNames(){
-  const colIndex = getColumnNumber(PropertiesService.getScriptProperties().getProperty('siteSheetfacilityNameCol'));
+  const targetColInfo = new classGetColumnInfo(PropertiesService.getScriptProperties().getProperty('siteSheetfacilityNameCol'));
+  const colIndex = targetColInfo.arrayIndex;
   return getTargetColValueFacilities(colIndex);
 }
 /**
@@ -22,7 +23,7 @@ function getTargetColValueFacilities(idx, condition=true){
 * @param {boolean} condition: If true then '臨床研究センター', else not '臨床研究センター' is a target 
 * @return {string} The values of the target code and name
 */
-function getTargetFacilitiesCodeAndName(condition=true){
+function getTargetFacilitiesCodeAndName(condition){
   const targetFacilities = getTargetFacilitiesValues(condition);
   // Removing Duplicate Code, get the latest name of the facility
   var targetFacilitiesCodes = targetFacilities.map(x => x[0]);
@@ -53,7 +54,8 @@ function getTargetFacilitiesValues(condition=true){
 function getTargetFacilityList(targetCol, conditionString, condition){
   const siteSheet = getTargetSheet(PropertiesService.getScriptProperties().getProperty('facilitySheetName'));
   var siteValues = siteSheet.getRange('A:F').getValues();
-  const targetIndex = getColumnNumber(targetCol);
+  const targetColInfo = new classGetColumnInfo(targetCol);
+  const targetIndex = targetColInfo.arrayIndex;
   siteValues = siteValues.filter(function(x){
     if (condition){
       return x[targetIndex] == conditionString;
@@ -91,7 +93,8 @@ function getTargetYears(){
 */
 function getRecentFacilityName(facilityCode){
   const facilityCodeCol = PropertiesService.getScriptProperties().getProperty('siteSheetfacilityCodeCol');
-  const facilityIdx = getColumnNumber(PropertiesService.getScriptProperties().getProperty('siteSheetfacilityNameCol'));
+  const facilityColInfo = new classGetColumnInfo(PropertiesService.getScriptProperties().getProperty('siteSheetfacilityNameCol'));
+  const facilityIdx = facilityColInfo.arrayIndex;
   const facilityList = getTargetFacilityList(facilityCodeCol, facilityCode, true);
   var facilityNames = facilityList.map(x => x[facilityIdx]);
   // If it's one code and one facility name, it returns the name of the facility
@@ -101,8 +104,10 @@ function getRecentFacilityName(facilityCode){
   // If more than one facility name in one code, only the most recent one is returned
   const years = getTargetYears();
   const workingSheetValues = getTargetSheet(PropertiesService.getScriptProperties().getProperty('inputSheetName')).getRange('A:E').getValues();
-  const inputYearsIdx = getColumnNumber(PropertiesService.getScriptProperties().getProperty('inputSheetyearsCol'));
-  const inputFacilityNameIdx = getColumnNumber(PropertiesService.getScriptProperties().getProperty('inputSheetfacilityNameCol'));
+  const inputYearsColInfo = new classGetColumnInfo(PropertiesService.getScriptProperties().getProperty('inputSheetyearsCol'));
+  const inputYearsIdx = inputYearsColInfo.arrayIndex;
+  const inputFacilityNameColInfo = new classGetColumnInfo(PropertiesService.getScriptProperties().getProperty('inputSheetfacilityNameCol'));
+  const inputFacilityNameIdx = inputFacilityNameColInfo.arrayIndex;
   for (var i = years.length - 1; i >= 0; i--){
     var tempYearValues = workingSheetValues.filter(x => x[inputYearsIdx] == years[i]);
     var tempfacilityByYear = tempYearValues.filter(x => facilityNames.indexOf(x[inputFacilityNameIdx]) > -1);

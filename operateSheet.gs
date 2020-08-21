@@ -33,31 +33,21 @@ class classHiddenSheets extends classVisibleHiddenSheets{
   }
 }
 /**
-* Get the sheets that don't print
-* @param none
-* @return {sheet} the sheet objects that don't print
-*/
-function getSheetsNonTargetPrinting(){
-  const facilitySheetName = PropertiesService.getScriptProperties().getProperty('facilitySheetName');
-  const inputSheetName = PropertiesService.getScriptProperties().getProperty('inputSheetName');
-  const constTarget = ['仕様書', facilitySheetName, 'siteidH31.3', 'siteChangeInfo', 'segment', inputSheetName, 'out'];
-  const targetSheets = getTargetSheets(constTarget);
-  return targetSheets;
-}
-/**
 * Delete the output sheets
 * @param {spreadsheet} ss: The target spreadsheet
-* @return none
+* @return {sheet} the leftmost sheet
 */
-function deleteSheets(ss=SpreadsheetApp.getActiveSpreadsheet()){
-  const sheetsNonTargetDeletion = getSheetsNonTargetPrinting();
-  const sheetNamesNonTargetDeletion = sheetsNonTargetDeletion.map(x => x.getName());
-  const targetSheets = ss.getSheets().filter(function(x){
-    if (this.indexOf(x.getName()) == -1){
-      return x;
-    };
-  }, sheetNamesNonTargetDeletion);
-  targetSheets.map(x => ss.deleteSheet(x));
+function deleteSheets(ss){
+  const deleteSheetName = PropertiesService.getScriptProperties().getProperty('tempDeleteSheetName');
+  // Keep the leftmost sheet and delete everything else
+  var tempSheets = ss.getSheets();
+  const tempSheet = tempSheets[0];
+  if (tempSheets.length > 1){
+    tempSheets.splice(0, 1);
+    tempSheets.map(x => ss.deleteSheet(x));
+  }
+  tempSheet.setName(deleteSheetName);
+  return tempSheet;
 }
 /**
 * Delete the sheet
@@ -72,34 +62,18 @@ function deleteTargetSheet(sheetName){
 }
 /**
 * Sort the sheets
-* Order: sheets not to be printed, facility name, year
+* Order: facility name, year
 * @param {spreadsheet} ss: The target spreadsheet
 * @return none
 */
-function sortSheets(ss=SpreadsheetApp.getActiveSpreadsheet()){
+function sortSheets(ss){
   const targetFacilities = getTargetFacilitiesNames();
   const targetYears = getTargetYears();
   const targetSheetsName = targetFacilities.concat(targetYears);
-  // Move non-printable sheets to the left
-  const sheetsNonTargetPrinting = getSheetsNonTargetPrinting();
-  const sheetsTargetPrinting = getTargetSheets(targetSheetsName);
-  const moveSheets = sheetsNonTargetPrinting.concat(sheetsTargetPrinting);
-  moveSheets.map(function(x, idx){
+  targetSheetsName.map(function(x, idx){
     x.activate();
     ss.moveActiveSheet(idx + 1);
   });
-}
-/**
-* Getting a Sheet object from an array of sheet names
-* @param {string[]} sheetNames An array of sheet names
-* @param {spreadsheet} ss: The target spreadsheet
-* @return {sheet} the sheet objects
-*/
-function getTargetSheets(sheetNames, ss=SpreadsheetApp.getActiveSpreadsheet()){
-  var targetSheets = sheetNames.map(x => ss.getSheetByName(x));
-  // If the sheet with that name does not exist, remove it from the array
-  targetSheets = targetSheets.filter(Boolean);
-  return targetSheets;
 }
 /**
 * Create a sheet at the end
@@ -107,7 +81,7 @@ function getTargetSheets(sheetNames, ss=SpreadsheetApp.getActiveSpreadsheet()){
 * @param {spreadsheet} ss: The target spreadsheet
 * @return {sheet} the sheet objects
 */
-function addSheetToEnd(sheetName, ss=SpreadsheetApp.getActiveSpreadsheet()){
+function addSheetToEnd(sheetName, ss){
   const tempIdx = ss.getNumSheets();
   const targetSheet = ss.insertSheet(sheetName, parseInt(tempIdx)); 
   return targetSheet;  
