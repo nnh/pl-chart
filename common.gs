@@ -15,8 +15,10 @@ function registerScriptProperty(){
   PropertiesService.getScriptProperties().setProperty('clinicalResearchCenter', '臨床研究センター');
   const scriptWorkingSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(PropertiesService.getScriptProperties().getProperty('scriptWorkingSheetName'));;
   PropertiesService.getScriptProperties().setProperty('outputSpreadsheetIdClinicalResearchCenter', scriptWorkingSheet.getRange(1, 2).getValue());
-  PropertiesService.getScriptProperties().setProperty('outputSpreadsheetIdOthers1', '');
-  PropertiesService.getScriptProperties().setProperty('outputSpreadsheetIdOthers4', '');
+  PropertiesService.getScriptProperties().setProperty('outputSpreadsheetIdOthers1', scriptWorkingSheet.getRange(2, 2).getValue());
+  PropertiesService.getScriptProperties().setProperty('outputSpreadsheetIdOthers2', scriptWorkingSheet.getRange(3, 2).getValue());
+  PropertiesService.getScriptProperties().setProperty('outputSpreadsheetIdOthers3', scriptWorkingSheet.getRange(4, 2).getValue());
+  PropertiesService.getScriptProperties().setProperty('outputSpreadsheetIdOthers4', scriptWorkingSheet.getRange(5, 2).getValue());
   PropertiesService.getScriptProperties().setProperty('tempDeleteSheetName', 'temp_del');
 }
 /**
@@ -46,4 +48,47 @@ class classGetColumnInfo{
   createQueryColumnName(){
     return 'Col' + this.columnNumber;
   }  
+}
+/**
+* Delete the output sheets
+* @param {spreadsheet} ss: The target spreadsheet
+* @return {sheet} the leftmost sheet
+*/
+function deleteSheets(ss){
+  const deleteSheetName = PropertiesService.getScriptProperties().getProperty('tempDeleteSheetName');
+  // Keep the leftmost sheet and delete everything else
+  var tempSheets = ss.getSheets();
+  const tempSheet = tempSheets[0];
+  if (tempSheets.length > 1){
+    tempSheets.splice(0, 1);
+    tempSheets.forEach(x => ss.deleteSheet(x));
+  }
+  tempSheet.setName(deleteSheetName);
+  return tempSheet;
+}
+/**
+* Create a sheet at the end
+* @param {string} sheetName the sheet name
+* @param {spreadsheet} ss: The target spreadsheet
+* @return {sheet} the sheet objects
+*/
+function addSheetToEnd(sheetName, ss){
+  const tempIdx = ss.getNumSheets();
+  const targetSheet = ss.insertSheet(sheetName, parseInt(tempIdx)); 
+  return targetSheet;  
+}
+function execCreateChart(values, target, processFlag){
+  var chartConditions;
+  if (processFlag){
+    // by facility
+    target.name = values[0];
+    target.chartSheetName = values[1];
+    chartConditions = new classSetChartConditionsByFacility(target);
+  } else {
+    // by years
+    target.name = values;
+    target.chartSheetName = values;
+    chartConditions = new classSetChartConditionsByYear(target);
+  }
+  executeCreateChart(chartConditions);
 }
