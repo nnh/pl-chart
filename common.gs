@@ -14,11 +14,11 @@ function registerScriptProperty(){
   PropertiesService.getScriptProperties().setProperty('inputSheetfacilityCodeCol', 'K');
   PropertiesService.getScriptProperties().setProperty('clinicalResearchCenter', '臨床研究センター');
   const scriptWorkingSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(PropertiesService.getScriptProperties().getProperty('scriptWorkingSheetName'));;
-  PropertiesService.getScriptProperties().setProperty('outputSpreadsheetIdClinicalResearchCenter', scriptWorkingSheet.getRange(1, 2).getValue());
-  PropertiesService.getScriptProperties().setProperty('outputSpreadsheetIdOthers1', scriptWorkingSheet.getRange(2, 2).getValue());
-  PropertiesService.getScriptProperties().setProperty('outputSpreadsheetIdOthers2', scriptWorkingSheet.getRange(3, 2).getValue());
-  PropertiesService.getScriptProperties().setProperty('outputSpreadsheetIdOthers3', scriptWorkingSheet.getRange(4, 2).getValue());
-  PropertiesService.getScriptProperties().setProperty('outputSpreadsheetIdOthers4', scriptWorkingSheet.getRange(5, 2).getValue());
+  PropertiesService.getScriptProperties().setProperty('outputSpreadsheetIdClinicalResearchCenter', scriptWorkingSheet.getRange(2, 2).getValue());
+  PropertiesService.getScriptProperties().setProperty('outputSpreadsheetIdOthers1', scriptWorkingSheet.getRange(3, 2).getValue());
+  PropertiesService.getScriptProperties().setProperty('outputSpreadsheetIdOthers2', scriptWorkingSheet.getRange(4, 2).getValue());
+  PropertiesService.getScriptProperties().setProperty('outputSpreadsheetIdOthers3', scriptWorkingSheet.getRange(5, 2).getValue());
+  PropertiesService.getScriptProperties().setProperty('outputSpreadsheetIdOthers4', scriptWorkingSheet.getRange(6, 2).getValue());
   PropertiesService.getScriptProperties().setProperty('tempDeleteSheetName', 'temp_del');
 }
 /**
