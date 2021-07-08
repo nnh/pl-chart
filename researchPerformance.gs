@@ -1,11 +1,27 @@
-function main(){
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  var researchPerformanceCondition = {};
-  researchPerformanceCondition.inputSheet = ss.getSheetByName('working');
-  researchPerformanceCondition.plSheet = ss.getSheetByName('research_performance2018');
-  researchPerformanceCondition.outputSheet = ss.getSheetByName('research2018'); 
-  researchPerformanceCondition.targetYear = '平成30年度'; 
-  getResearchPerformance(researchPerformanceCondition);
+class GetResearchPerformance{
+  constructor(targetList){
+    this.target = targetList;
+    if (targetList.year < 2019){
+      this.targetYearStr = '平成' + String(targetList.year - 2000 + 12) + '年度';
+    } else {
+      this.targetYearStr = '';
+    }
+  }
+  getData(){
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    var researchPerformanceCondition = {};
+    researchPerformanceCondition.inputSheet = ss.getSheetByName('working');
+    researchPerformanceCondition.plSheet = ss.getSheetByName('research_performance' + this.target.year);
+    researchPerformanceCondition.outputSheet = ss.getSheetByName('research' + this.target.year); 
+    researchPerformanceCondition.targetYear = this.targetYearStr; 
+    getResearchPerformance(researchPerformanceCondition);
+  }
+}
+function get2017(){
+    var researchPerformanceCondition = {};
+    researchPerformanceCondition.year = 2017; 
+    const researchPerformance = new GetResearchPerformance(researchPerformanceCondition);
+    researchPerformance.getData();
 }
 function getResearchPerformance(researchPerformanceCondition){
   const inputRawdata = researchPerformanceCondition.inputSheet.getDataRange().getValues();
