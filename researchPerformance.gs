@@ -17,15 +17,24 @@ class GetResearchPerformance{
     getResearchPerformance(researchPerformanceCondition);
   }
 }
-function get2017(){
+function main(){
+  const targetYears = [2017, 2015, 2014];
+  targetYears.forEach(x => getByYear(x));
+}
+function getByYear(targetYear){
     var researchPerformanceCondition = {};
-    researchPerformanceCondition.year = 2017; 
+    researchPerformanceCondition.year = targetYear; 
     const researchPerformance = new GetResearchPerformance(researchPerformanceCondition);
     researchPerformance.getData();
 }
 function getResearchPerformance(researchPerformanceCondition){
   const inputRawdata = researchPerformanceCondition.inputSheet.getDataRange().getValues();
-  const plRawdata = researchPerformanceCondition.plSheet.getDataRange().getValues();
+  if (researchPerformanceCondition.plSheet){
+    var plRawdata = researchPerformanceCondition.plSheet.getDataRange().getValues();
+  } else {
+    // dummy
+    var plRawdata = [['dummy', 0], [0, 0]];
+  }
   const plSumColumn = plRawdata[0].length - 1;
   const plTargetArray = plRawdata.map(x => [x[0], x[plSumColumn]]);
   const plTargetArrayObj = Object.fromEntries(plTargetArray);
@@ -36,4 +45,3 @@ function getResearchPerformance(researchPerformanceCondition){
   researchPerformanceCondition.outputSheet.clearContents
   researchPerformanceCondition.outputSheet.getRange(1, 1, outputValues.length, outputValues[0].length).setValues(outputValues);
 }
-
