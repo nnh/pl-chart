@@ -4,7 +4,8 @@
 * @return none
 */
 function execCreateChartMain(){
-  var target = {};
+  createOutputSpreadSheet(['PL（臨床研究センター）'], ['outputSpreadsheetIdClinicalResearchCenter']);
+  let target = {};
   target.ss = SpreadsheetApp.openById(PropertiesService.getScriptProperties().getProperty('outputSpreadsheetIdClinicalResearchCenter'));
   // Delete the output sheets
   const tempDelSheet = deleteSheets(target.ss);
