@@ -1,88 +1,3 @@
-/**
-* Create a chart
-* @param {object} chartConditions　 
-* @param {sheet} inputSheet: Source of the chart　 
-* @param {sheet} outputSheet: Sheet to output a chart　 
-* @param {number} outputChartRow: Row to output a chart　 
-* @return none 
-*/
-//function createChart(chartConditions, inputSheet, outputSheet, outputChartRow){
-//  // Reference URL
-//  // https://developers.google.com/chart/interactive/docs/gallery/combochart
-//  var table_outputRow = chartConditions.tableStartRow;
-//  const tableStartCol = 2;
-//  const chartTitleFontSize = 20;
-//  const annotationsFontSize = 10;
-//  const legendFontSize = 10;
-//  const vAxesFontSize = 10;
-//  const hAxisFontSize = 8;
-//  const tableFontSize = 10;
-//  var newChart = outputSheet.newChart()
-//  // Data Range for a Chart
-//  .addRange(inputSheet.getRange(chartConditions.rangeAddress_x))
-//  .addRange(inputSheet.getRange(chartConditions.rangeAddress_y0))
-//  .addRange(inputSheet.getRange(chartConditions.rangeAddress_y1))
-//  .addRange(inputSheet.getRange(chartConditions.rangeAddress_y2))
-//  .setChartType(Charts.ChartType.COMBO)
-//  // The position to output a chart
-//  .setPosition(outputChartRow, 1, 0, 0)
-//  // Title
-//  .setOption('title', chartConditions.title)
-//  .setOption('titleTextStyle', {color: 'black', fontSize: chartTitleFontSize})
-//  // Type of a chart
-////  .setOption('series', {
-////    0: {type: 'bars', color:'#666666', labelInLegend:chartConditions.labelRevenue, targetAxisIndex: 0, 
-////        dataLabel: 'value', dataLabelPlacement: 'outsideEnd', annotations: {textStyle: {color: 'gray', fontSize: annotationsFontSize}}}, 
-////    1: {type: 'bars', color:'#cccccc', labelInLegend:chartConditions.labelCost, targetAxisIndex: 0, 
-////        dataLabel: 'value', dataLabelPlacement: 'outsideEnd', annotations: {textStyle: {color: 'gray', fontSize: annotationsFontSize}}},
-////    2: {type: 'line', color: 'black', labelInLegend:chartConditions.labelProfit, lineWidth: 2, pointSize: 7, targetAxisIndex: 1, 
-////        dataLabel: 'value', dataLabelPlacement: 'outsideEnd', annotations: {textStyle: {color: 'black', fontSize: annotationsFontSize}}}
-////  })
-//  .setOption('series.0.labelInLegend', '収益')
-//  //Setting a legend
-//  .setOption('legend', {position: 'top', textStyle: {color: 'black', fontSize: legendFontSize}}) 
-//  // Chart size
-//  .setOption('width', 700)
-//  .setOption('height', 462)
-//  // Putting a slant on the output string on the horizontal axis
-//  .setOption('hAxis.slantedText', true)
-//  .setOption('hAxis.slantedTextAngle', 60)
-//  // Set the font size of the horizontal axis
-//  .setOption('hAxis.textStyle.fontSize', hAxisFontSize)
-//  // Vertical axis setting
-//  if (chartConditions.targetCost == chartConditions.constClinicalResearch){
-//    newChart.setOption('vAxes', {
-//      0: {title:'金額(百万円)', titleTextStyle: {fontSize: vAxesFontSize}, format: 'decimal', viewWindowMode: 'explicit', viewWindow: {min: -2000, max: 2000}, textStyle: //{fontSize: vAxesFontSize}},   
-//      1: {format: 'decimal', viewWindowMode: 'explicit', viewWindow: {min: -2000, max: 2000}, textPosition: 'none'}
-//    })
-//  } else {
-//    newChart.setOption('vAxes', {
-//      0: {title:'金額(百万円)', titleTextStyle: {fontSize: vAxesFontSize}, format: 'decimal', viewWindowMode: 'explicit', viewWindow: {min: -30000, max: 30000}, gridlines:{count: 5}, textStyle: {fontSize: vAxesFontSize}},   
-//      1: {format: 'decimal', viewWindowMode: 'explicit', viewWindow: {min: -30000, max: 30000}, gridlines:{count: 5}, textPosition: 'none'}
-//    })
-//  };
-//  // Output a chart
-//  outputSheet.insertChart(newChart.build());
-//  // Set the grid line to "Do not output"
-//  outputSheet.setHiddenGridlines(true);
-//}
-/**
-* Create a chart
-* @param {object} target: chartConditions　 
-* @return none 
-*/
-//function executeCreateChart(target){
-//  // Create a sheet to output a chart
-//  const chart_outputSheet = addSheetToEnd(target.chartSheetName, target.ss); 
-//  // ClinicalResearch
-//  var chartConditionsClinicalResearch = target;
-//  chartConditionsClinicalResearch.clinicalResearch = '';
-//  executeCreateChartCommon(chartConditionsClinicalResearch, chart_outputSheet);
-//  // Ordinary
-//  var chartConditionsOrdinary = target;
-//  chartConditionsOrdinary.ordinary = '';
-//  executeCreateChartCommon(chartConditionsOrdinary, chart_outputSheet);
-//}
 class classSetChartConditions{
   constructor(target){
     this.ss = target.ss;
@@ -189,6 +104,7 @@ function executeCreateChartCommon(chartConditions, chart_outputSheet){
 //  createChart(chartConditions, inputSheet, chart_outputSheet, chartConditions.outputRow);
 }
 /**
+* Create a chart.
 */ 
 class CreateChart{
   constructor(chartConditions){
@@ -213,10 +129,6 @@ class CreateChart{
       .addRange(this.inputSheet.getRange(this.rangeAddress_y0))
       .addRange(this.inputSheet.getRange(this.rangeAddress_y1))
       .addRange(this.inputSheet.getRange(this.rangeAddress_y2))
-//      .addRange(this.inputSheet.getRange('C2:C' + this.inputSheetLastRow))
-//      .addRange(this.inputSheet.getRange('L2:L' + this.inputSheetLastRow))
-//      .addRange(this.inputSheet.getRange('N2:N' + this.inputSheetLastRow))
-//      .addRange(this.inputSheet.getRange('Q2:Q' + this.inputSheetLastRow))
       .setPosition(this.outputRow, 1, 0, 0)
       .setMergeStrategy(Charts.ChartMergeStrategy.MERGE_COLUMNS)
       .setTransposeRowsAndColumns(false)
@@ -226,13 +138,13 @@ class CreateChart{
       .setOption('useFirstColumnAsDomain', true)
       .setOption('legend.position', 'top')
       .setOption('title', this.chartTitle)  
-      .setOption('annotations.domain.textStyle.color', '#808080')
+      .setOption('annotations.domain.textStyle.color', '#000000')
       .setOption('textStyle.color', '#000000')
       .setOption('legend.textStyle.fontSize', 10)
-      .setOption('legend.textStyle.color', '#1a1a1a')
+      .setOption('legend.textStyle.color', '#000000')
       .setOption('titleTextStyle.fontSize', 20)
-      .setOption('titleTextStyle.color', '#757575')
-      .setOption('annotations.total.textStyle.color', '#808080')
+      .setOption('titleTextStyle.color', '#000000')
+      .setOption('annotations.total.textStyle.color', '#000000')
       .setOption('hAxis.slantedText', true)
       .setOption('hAxis.slantedTextAngle', 60)
       .setOption('hAxis.textStyle.fontSize', 8)

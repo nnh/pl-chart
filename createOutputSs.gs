@@ -4,8 +4,6 @@ function createOutputSpreadSheet(ssNames, propertyNames){
   if (targetFolderId === ''){
     return;
   };
-//  const ssNames = ['PL（臨床研究センター以外）_1', 'PL（臨床研究センター以外）_2', 'PL（臨床研究センター以外）_3', 'PL（臨床研究センター以外）_4'];
-//  const propertyNames = ['outputSpreadsheetIdOthers1', 'outputSpreadsheetIdOthers2', 'outputSpreadsheetIdOthers3', 'outputSpreadsheetIdOthers4'];
   const targetFolder = DriveApp.getFolderById(targetFolderId);
   if (!targetFolder){
     return;
@@ -17,6 +15,3 @@ function createOutputSpreadSheet(ssNames, propertyNames){
     PropertiesService.getScriptProperties().setProperty(propertyNames[idx], sheet.getId());
   });
 }
-//createOutputSpreadSheet(['PL（臨床研究センター）'], ['outputSpreadsheetIdClinicalResearchCenter']);
-//createOutputSpreadSheet(['PL（臨床研究センター以外）_1', 'PL（臨床研究センター以外）_2', 'PL（臨床研究センター以外）_3', 'PL（臨床研究センター以外）_4'],
-//                        ['outputSpreadsheetIdOthers1', 'outputSpreadsheetIdOthers2', 'outputSpreadsheetIdOthers3', 'outputSpreadsheetIdOthers4']);

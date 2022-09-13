@@ -4,6 +4,8 @@
 * @return none
 */
 function execCreateChartOthersMain(){
+  createOutputSpreadSheet(['PL（臨床研究センター以外）_1', 'PL（臨床研究センター以外）_2', 'PL（臨床研究センター以外）_3', 'PL（臨床研究センター以外）_4'],
+                          ['outputSpreadsheetIdOthers1', 'outputSpreadsheetIdOthers2', 'outputSpreadsheetIdOthers3', 'outputSpreadsheetIdOthers4']);
   const countMax = 33;
   const targetFacilitiesCodeAndName = getTargetFacilitiesCodeAndName(false);
   const targetFacilitiesCount = targetFacilitiesCodeAndName.length;
@@ -23,5 +25,6 @@ function execCreateChartOthersMain(){
     // Output sheets for each facility
     condition.facilities.forEach(x => execCreateChart(x, condition, true));
     condition.ss.deleteSheet(tempDelSheet);
+    global_accessPermission = false;
   });
 }  
