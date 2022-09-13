@@ -278,16 +278,13 @@ function executeCreateChart(target){
   // ClinicalResearch
   let chartConditionsClinicalResearch = target;
   chartConditionsClinicalResearch.clinicalResearch = '';
-//  createChartInfo.inputSheet = ss.getSheetByName(createChartInfo.chartTitle);
   let chartConditions = executeCreateChartCommon(chartConditionsClinicalResearch, chart_outputSheet);
   chartConditions.outputSheet = chart_outputSheet;
   new CreateChart(chartConditions).createInsertChart();
-  return;
   // Ordinary
-  var chartConditionsOrdinary = target;
+  let chartConditionsOrdinary = target;
   chartConditionsOrdinary.ordinary = '';
-  executeCreateChartCommon(chartConditionsOrdinary, chart_outputSheet);
-
-
-  new CreateChartOverAll(createChartInfo, chartConditions).createInsertChart();
+  chartConditions = executeCreateChartCommon(chartConditionsOrdinary, chart_outputSheet);
+  chartConditions.outputSheet = chart_outputSheet;
+  new CreateChartOverAll(chartConditions).createInsertChart();
 }; 

@@ -31,6 +31,15 @@ function createQuerySheet(chartConditions){
   targetSheet.getRange(1, 1).setFormula(strQuery);
   // Formatting Chart Data
   targetSheet.getRange('D:Q').setNumberFormat('#,##0');
+  // Wait until access permissions are manually executed.
+  SpreadsheetApp.flush();
+  const ui = SpreadsheetApp.getUi()
+  const res = !global_accessPermission ? ui.alert('', '出力ファイルを開き、アクセス許可を実施してからOKをクリックしてください。', ui.ButtonSet.OK) : ui.Button.OK;
+  if (res !== ui.Button.OK){
+    ui.alert('test');
+    return null;
+  };
+  global_accessPermission = true;
   // Hide this sheet
   targetSheet.hideSheet();
   return targetSheet;

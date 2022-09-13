@@ -1,4 +1,8 @@
 /**
+ * Setting Global Variables.
+ */
+let global_accessPermission = false;
+/**
 * Setting Project Properties
 * @param none
 * @return none
@@ -85,4 +89,11 @@ function execCreateChart(values, target, processFlag){
     chartConditions = new classSetChartConditionsByYear(target);
   }
   executeCreateChart(chartConditions);
+}
+function onOpen() {
+  const ui = SpreadsheetApp.getUi();
+  let menu = ui.createMenu('PL表出力');
+  menu.addItem('臨床研究センター', 'execCreateChartMain');
+  menu.addItem('臨床研究センター以外', 'execCreateChartOthersMain');
+  menu.addToUi();
 }
