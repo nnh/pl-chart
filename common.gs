@@ -90,6 +90,24 @@ function execCreateChart(values, target, processFlag){
   }
   executeCreateChart(chartConditions);
 }
+function getOutputFolder_(){
+  const inputSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(PropertiesService.getScriptProperties().getProperty('scriptWorkingSheetName'));
+  if (inputSheet === null){
+    return null;
+  }
+  const targetFolderId = inputSheet.getRange(9, 2).getValue();
+  if (targetFolderId === ''){
+    return null;
+  };
+  const folder = (() => {
+    try {
+      return DriveApp.getFolderById(targetFolderId);
+    } catch (e) {
+      return null;
+    }
+  })();
+  return folder;
+}
 function onOpen() {
   const ui = SpreadsheetApp.getUi();
   let menu = ui.createMenu('PL表出力');
