@@ -18,6 +18,7 @@ class classSetChartConditions{
     this.labelProfit = '利益';
     this.targetName = target.name;
     this.chartSheetName = target.chartSheetName;
+    this.selectItems_L = 'Col12';
   }
   set clinicalResearch(value){
     this.targetCost = this.constClinicalResearch;
@@ -56,12 +57,12 @@ class classSetChartConditionsByFacility extends classSetChartConditions{
     this.dataCol = dataColInfo.queryColumnName;
     this.xColName = xColName;
     this.xCol = yearsCol;
-    this.orderbyCol = yearsCol;
+    this.orderbyCol = 'Col12';
     this.ymdCondition = '';
     // Address of the cell range of the input data for Chart output
     this.condition = this.targetName;
     this.strB = "'unused_B'";
-    this.groupBy = 'Col3, Col11';
+    this.groupBy = 'Col3, Col11, Col12';
   }
 }
 class classSetChartConditionsByYear extends classSetChartConditions{
@@ -80,6 +81,7 @@ class classSetChartConditionsByYear extends classSetChartConditions{
     this.condition = "'" + this.targetName + "'";
     this.strB = 'Col2';
     this.groupBy = 'Col2, Col3, Col11';
+    this.selectItems_L = null;
   }
 }
 /**
@@ -159,8 +161,8 @@ class CreateChart{
       .setOption('series.0.labelInLegend', '収益')
       .setOption('series.1.labelInLegend', '費用')
       .setOption('series.2.labelInLegend', '利益')
-      .setOption('series.0.type', 'ColumnChart')
-      .setOption('series.1.type', 'ColumnChart')
+      .setOption('series.0.type', 'bars')
+      .setOption('series.1.type', 'bars')
       .setOption('series.2.pointSize', 7)
       .setYAxisTitle('単位（百万円）')
       .setOption('height', 462)
