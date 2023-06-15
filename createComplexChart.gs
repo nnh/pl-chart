@@ -18,6 +18,7 @@ class classSetChartConditions{
     this.labelProfit = '利益';
     this.targetName = target.name;
     this.chartSheetName = target.chartSheetName;
+    this.selectItems_L = 'Col12';
   }
   set clinicalResearch(value){
     this.targetCost = this.constClinicalResearch;
@@ -56,12 +57,12 @@ class classSetChartConditionsByFacility extends classSetChartConditions{
     this.dataCol = dataColInfo.queryColumnName;
     this.xColName = xColName;
     this.xCol = yearsCol;
-    this.orderbyCol = yearsCol;
+    this.orderbyCol = 'Col12';
     this.ymdCondition = '';
     // Address of the cell range of the input data for Chart output
     this.condition = this.targetName;
     this.strB = "'unused_B'";
-    this.groupBy = 'Col3, Col11';
+    this.groupBy = 'Col3, Col11, Col12';
   }
 }
 class classSetChartConditionsByYear extends classSetChartConditions{
@@ -80,6 +81,7 @@ class classSetChartConditionsByYear extends classSetChartConditions{
     this.condition = "'" + this.targetName + "'";
     this.strB = 'Col2';
     this.groupBy = 'Col2, Col3, Col11';
+    this.selectItems_L = null;
   }
 }
 /**
