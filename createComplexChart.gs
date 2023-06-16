@@ -3,8 +3,8 @@ class classSetChartConditions{
     this.ss = target.ss;
     // Output in millions of yen
     const items_unit = '1000000';
-    this.constClinicalResearch = '（臨床研究）';
-    this.constOrdinary = '（全体）';
+    this.constClinicalResearch = PropertiesService.getScriptProperties().getProperty('clinicalResearchSheetNameFooter');
+    this.constOrdinary = PropertiesService.getScriptProperties().getProperty('ordinarySheetNameFooter');
     this.startRow = 2;
     this.endRow = 30;
     this.selectItems_D = 'sum(Col4)/' + items_unit;
@@ -124,8 +124,8 @@ class CreateChart{
     // Set the grid line to "Do not output"
     this.outputSheet.setHiddenGridlines(true);
   };
-  createChartObject(){
-    const chart = this.outputSheet.newChart()
+  setChartOptions(chart){
+    return chart
       .asComboChart()
       .addRange(this.inputSheet.getRange(this.rangeAddress_x))
       .addRange(this.inputSheet.getRange(this.rangeAddress_y0))
@@ -170,7 +170,9 @@ class CreateChart{
       .setRange(this.chartRangeMin, this.chartRangeMax)
       .setColors(["gray", "silver", "black"])
       .build();
-    return chart;
+  }
+  createChartObject(){
+    return this.setChartOptions(this.outputSheet.newChart());
   };
   insertChart(chart){
     this.outputSheet.insertChart(chart);
@@ -178,6 +180,9 @@ class CreateChart{
   createInsertChart(){
     this.insertChart(this.createChartObject());
   };
+  removeChart(chart){
+    this.outputSheet.removeChart(chart);
+  }
 };
 class CreateChartOverAll extends CreateChart{
   constructor(chartConditions){
