@@ -1,17 +1,14 @@
-function createOutputSpreadSheet(ssNames, propertyNames){
-  const inputSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('script_wk');
-  const targetFolderId = inputSheet.getRange(9, 2).getValue();
-  if (targetFolderId === ''){
-    return;
+function createOutputSpreadSheet_(propertyNameAndSpreadsheetNameList){
+  const targetFolder = getOutputFolder_();
+  if (targetFolder === null){
+    return null;
   };
-  const targetFolder = DriveApp.getFolderById(targetFolderId);
-  if (!targetFolder){
-    return;
-  };
-  ssNames.forEach((x, idx) => {
-    const sheet = SpreadsheetApp.create(x);
-    const file = DriveApp.getFileById(sheet.getId());
+  const spreadSheets = propertyNameAndSpreadsheetNameList.map(([propertyName, spreadsheetName]) => {
+    const spreadsheet = SpreadsheetApp.create(spreadsheetName);
+    const file = DriveApp.getFileById(spreadsheet.getId());
     file.moveTo(targetFolder);
-    PropertiesService.getScriptProperties().setProperty(propertyNames[idx], sheet.getId());
+    PropertiesService.getScriptProperties().setProperty(propertyName, spreadsheet.getId());
+    return spreadsheet;
   });
+  return spreadSheets.length === 1 ? spreadSheets[0] : spreadSheets;
 }

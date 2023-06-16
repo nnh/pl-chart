@@ -4,21 +4,22 @@
 * @return none
 */
 function execCreateChartOthersMain(){
-  createOutputSpreadSheet(['PL（臨床研究センター以外）_1', 'PL（臨床研究センター以外）_2', 'PL（臨床研究センター以外）_3', 'PL（臨床研究センター以外）_4'],
-                          ['outputSpreadsheetIdOthers1', 'outputSpreadsheetIdOthers2', 'outputSpreadsheetIdOthers3', 'outputSpreadsheetIdOthers4']);
+  const propertyNameAndSpreadsheetNames = new GetSpreadsheetNames().getOthersArray();
+  const spreadSheets = createOutputSpreadSheet_(propertyNameAndSpreadsheetNames);
   const countMax = 33;
   const targetFacilitiesCodeAndName = getTargetFacilitiesCodeAndName(false);
   const targetFacilitiesCount = targetFacilitiesCodeAndName.length;
-  const targetArray = [['outputSpreadsheetIdOthers1', countMax],
-                       ['outputSpreadsheetIdOthers2', countMax],
-                       ['outputSpreadsheetIdOthers3', countMax],
-                       ['outputSpreadsheetIdOthers4', targetFacilitiesCount - countMax * 3]];
-  targetArray.forEach(function(x, idx){
+  const lastSpreadSheetIndex = 3;
+  const targetArray = spreadSheets.map((spreadsheet, idx) => {
+    const count = idx === lastSpreadSheetIndex ? targetFacilitiesCount - countMax * lastSpreadSheetIndex : countMax;
+    return [spreadsheet, count];
+  });
+  targetArray.forEach(([spreadsheet, count], idx) => {
     const startIndex = idx * countMax;
-    const endIndex = startIndex + x[1];
+    const endIndex = startIndex + count;
     const target = targetFacilitiesCodeAndName.slice(startIndex, endIndex);
-    const condition = {ss: SpreadsheetApp.openById(PropertiesService.getScriptProperties().getProperty(x[0])), 
-                       sheetCount: x[1], 
+    const condition = {ss: spreadsheet, 
+                       sheetCount: count, 
                        facilities: target};
     // Delete the output sheets
     const tempDelSheet = deleteSheets(condition.ss);
