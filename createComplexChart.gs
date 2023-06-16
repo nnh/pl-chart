@@ -124,8 +124,8 @@ class CreateChart{
     // Set the grid line to "Do not output"
     this.outputSheet.setHiddenGridlines(true);
   };
-  createChartObject(){
-    const chart = this.outputSheet.newChart()
+  setChartOptions(chart){
+    return chart
       .asComboChart()
       .addRange(this.inputSheet.getRange(this.rangeAddress_x))
       .addRange(this.inputSheet.getRange(this.rangeAddress_y0))
@@ -170,7 +170,9 @@ class CreateChart{
       .setRange(this.chartRangeMin, this.chartRangeMax)
       .setColors(["gray", "silver", "black"])
       .build();
-    return chart;
+  }
+  createChartObject(){
+    return this.setChartOptions(this.outputSheet.newChart());
   };
   insertChart(chart){
     this.outputSheet.insertChart(chart);
