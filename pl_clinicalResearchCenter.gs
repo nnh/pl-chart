@@ -5,7 +5,7 @@
 */
 function execCreateChartMain(){
   const target = {};
-  target.ss = createOutputSpreadSheet_(['PL（臨床研究センター）'], ['outputSpreadsheetIdClinicalResearchCenter']);
+  target.ss = createOutputSpreadSheet_(new GetSpreadsheetNames().getClinicalResearchCenterArray());
   // Delete the output sheets
   const tempDelSheet = deleteSheets(target.ss);
   const targetFacilitiesCodeAndName = getTargetFacilitiesCodeAndName(true);

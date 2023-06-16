@@ -108,10 +108,26 @@ function getOutputFolder_(){
   })();
   return folder;
 }
+class GetSpreadsheetNames{
+  constructor(){
+    this.keyHeader = 'outputSpreadsheetId';
+  }
+  getClinicalResearchCenterArray(){
+    return [
+      [`${this.keyHeader}ClinicalResearchCenter`, `PL（${PropertiesService.getScriptProperties().getProperty('clinicalResearchCenter')}）`]
+    ];
+  }
+  getOthersArray(){
+    return [...Array(4)].map((_, idx) => [`${this.keyHeader}Others${idx + 1}`, `PL（${PropertiesService.getScriptProperties().getProperty('clinicalResearchCenter')}以外）_${idx + 1}`]);
+  }
+}
 function onOpen() {
+  if (PropertiesService.getScriptProperties().getProperty('clinicalResearchCenter') === null){
+    registerScriptProperty();
+  }
   const ui = SpreadsheetApp.getUi();
-  let menu = ui.createMenu('PL表出力');
-  menu.addItem('臨床研究センター', 'execCreateChartMain');
-  menu.addItem('臨床研究センター以外', 'execCreateChartOthersMain');
+  const menu = ui.createMenu('PL表出力');
+  menu.addItem(PropertiesService.getScriptProperties().getProperty('clinicalResearchCenter'), 'execCreateChartMain');
+  menu.addItem(`${PropertiesService.getScriptProperties().getProperty('clinicalResearchCenter')}以外`, 'execCreateChartOthersMain');
   menu.addToUi();
 }
