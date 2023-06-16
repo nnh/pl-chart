@@ -3,8 +3,8 @@ class classSetChartConditions{
     this.ss = target.ss;
     // Output in millions of yen
     const items_unit = '1000000';
-    this.constClinicalResearch = '（臨床研究）';
-    this.constOrdinary = '（全体）';
+    this.constClinicalResearch = PropertiesService.getScriptProperties().getProperty('clinicalResearchSheetNameFooter');
+    this.constOrdinary = PropertiesService.getScriptProperties().getProperty('ordinarySheetNameFooter');
     this.startRow = 2;
     this.endRow = 30;
     this.selectItems_D = 'sum(Col4)/' + items_unit;
@@ -180,6 +180,9 @@ class CreateChart{
   createInsertChart(){
     this.insertChart(this.createChartObject());
   };
+  removeChart(chart){
+    this.outputSheet.removeChart(chart);
+  }
 };
 class CreateChartOverAll extends CreateChart{
   constructor(chartConditions){

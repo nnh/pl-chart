@@ -18,6 +18,8 @@ function registerScriptProperty(){
   PropertiesService.getScriptProperties().setProperty('inputSheetfacilityCodeCol', 'K');
   PropertiesService.getScriptProperties().setProperty('clinicalResearchCenter', '臨床研究センター');
   PropertiesService.getScriptProperties().setProperty('tempDeleteSheetName', 'temp_del');
+  PropertiesService.getScriptProperties().setProperty('clinicalResearchSheetNameFooter', '（臨床研究）');
+  PropertiesService.getScriptProperties().setProperty('ordinarySheetNameFooter', '（全体）');
 }
 /**
 * Get the sheet
@@ -120,6 +122,9 @@ class GetSpreadsheetNames{
   getOthersArray(){
     return [...Array(4)].map((_, idx) => [`${this.keyHeader}Others${idx + 1}`, `PL（${PropertiesService.getScriptProperties().getProperty('clinicalResearchCenter')}以外）_${idx + 1}`]);
   }
+  getAllArray(){
+    return [...this.getClinicalResearchCenterArray(), ...this.getOthersArray()];
+  }
 }
 function onOpen() {
   if (PropertiesService.getScriptProperties().getProperty('clinicalResearchCenter') === null){
@@ -129,5 +134,6 @@ function onOpen() {
   const menu = ui.createMenu('PL表出力');
   menu.addItem(PropertiesService.getScriptProperties().getProperty('clinicalResearchCenter'), 'execCreateChartMain');
   menu.addItem(`${PropertiesService.getScriptProperties().getProperty('clinicalResearchCenter')}以外`, 'execCreateChartOthersMain');
+  menu.addItem('グラフ整形', 'modyfiComplexChartMain');
   menu.addToUi();
 }
