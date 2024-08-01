@@ -74,9 +74,9 @@ function getTargetYears(){
   const workingSheet = getTargetSheet(PropertiesService.getScriptProperties().getProperty('inputSheetName'));
   const yearsCol = PropertiesService.getScriptProperties().getProperty('inputSheetyearsCol');
   const rangeAddr = yearsCol + ':' + yearsCol;
-  var years = workingSheet.getRange(rangeAddr).getValues();
+  const yearsValue = workingSheet.getRange(rangeAddr).getValues();
   // Making an array from two-dimensional to one-dimensional
-  years = years.reduce(function(x, item){
+  let years = yearsValue.reduce(function(x, item){
     x.push(...item);
     return x;
   }, []);
